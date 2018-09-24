@@ -5,7 +5,7 @@
  * Generated linker script file for LPC1549
  * Created from linkscript.ldt by FMCreateLinkLibraries
  * Using Freemarker v2.3.23
- * MCUXpresso IDE v10.2.1 [Build 795] [2018-07-25]  on Sep 24, 2018 3:09:59 PM
+ * MCUXpresso IDE v10.2.1 [Build 795] [2018-07-25]  on Sep 24, 2018 5:28:14 PM
  */
 
 INCLUDE "ArmOS_lab3_ex2_Debug_library.ld"

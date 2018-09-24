@@ -44,7 +44,7 @@ all: ArmOS_lab4_ex1.axf
 ArmOS_lab4_ex1.axf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MCU C++ Linker'
-	arm-none-eabi-c++ -nostdlib -L"D:\1. Project\NPCXpresso10.2\lpc_board_nxp_lpcxpresso_1549\Debug" -L"D:\1. Project\NPCXpresso10.2\lpc_chip_15xx\Debug" -L"D:\1. Project\NPCXpresso10.2\FreeRTOS\Debug" -L"D:\1. Project\NPCXpresso10.2\lib_itm\Debug" -Xlinker -Map="ArmOS_lab4_ex1.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -mcpu=cortex-m3 -mthumb -T "ArmOS_lab3_ex2_Debug.ld" -o "ArmOS_lab4_ex1.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-c++ -nostdlib -L"D:\1.Project\NPCXpresso10.2\lpc_board_nxp_lpcxpresso_1549\Debug" -L"D:\1.Project\NPCXpresso10.2\lpc_chip_15xx\Debug" -L"D:\1.Project\NPCXpresso10.2\FreeRTOS\Debug" -L"D:\1.Project\NPCXpresso10.2\lib_itm\Debug" -Xlinker -Map="ArmOS_lab4_ex1.map" -Xlinker --gc-sections -Xlinker -print-memory-usage -mcpu=cortex-m3 -mthumb -T "ArmOS_lab3_ex2_Debug.ld" -o "ArmOS_lab4_ex1.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	$(MAKE) --no-print-directory post-build

@@ -27,19 +27,6 @@
 #include "itm.h"
 
 #define myTICK_RATE_HZ (configTICK_RATE_HZ)
-#define LPC_IRQNUM      UART0_IRQn
-
-#define SCT_PWM            LPC_SCT0 /* Use SCT0 for PWM */
-#define SCT_PWM_PIN_LED    0        /* COUT0 [index 2] Controls LED */
-#define SCT_PWM_LED        2        /* Index of LED PWM */
-#define SCT_PWM_RATE	   1000        /* PWM frequency 1 KHz */
-
-#define LED_STEP_CNT      20        /* Change LED duty cycle every 20ms */
-
-struct debugEvent {
-	char *format;
-	uint32_t data[3];
-};
 
 class Fmutex  {
 public:
@@ -59,11 +46,6 @@ private:
 	xSemaphoreHandle mutex;
 };
 
-void debug(char* format, uint32_t d1, uint32_t  d2, uint32_t d3, QueueHandle_t queue) {
-	debugEvent e = {format, d1, d2, d3};
-	xQueueSend(queue, &e, portMAX_DELAY);
-}
-
 xSemaphoreHandle lim_sem = xSemaphoreCreateBinary();
 
 static void prvSetupHardware(void)
@@ -77,17 +59,21 @@ static void vTask1(void *pvParameters) {
 	DigitalIoPin green(0, 3, DigitalIoPin::output, false);
 	DigitalIoPin lim1(0, 27, DigitalIoPin::pullup, false);
 	DigitalIoPin lim2(0, 28, DigitalIoPin::pullup, false);
+	green.write(true);
 	while(1) {
+
 		if(lim1.read() == false) {
-			red.write(false);
-			xSemaphoreGive(lim_sem);
+			if(xSemaphoreGive(lim_sem) == pdTRUE)
+				red.write(false);
 		}
 		else red.write(true);
+
 		if(lim2.read() == false) {
-			green.write(false);
-			xSemaphoreGive(lim_sem);
+			if(xSemaphoreGive(lim_sem) == pdTRUE)
+				green.write(false);
 		}
 		else green.write(true);
+
 		vTaskDelay(configTICK_RATE_HZ/10);
 	}
 }
@@ -95,41 +81,33 @@ static void vTask1(void *pvParameters) {
 
 static void vTask2(void *pvParameters) {
 	DigitalIoPin DIR(1, 0, DigitalIoPin::output, false);
-	DigitalIoPin blue(1, 1, DigitalIoPin::output, false);
 	DigitalIoPin sw1(0, 17, DigitalIoPin::pullup, false);
 	DigitalIoPin sw3(1, 9, DigitalIoPin::pullup, false);
-	/* Initialize the SCT as PWM and set frequency */
-	Chip_SCTPWM_Init(SCT_PWM);
-	Chip_SCTPWM_SetRate(SCT_PWM, SCT_PWM_RATE);
-
-	/* Enable SWM clock before altering SWM */
-	Chip_Clock_EnablePeriphClock(SYSCTL_CLOCK_SWM);
-	Chip_SWM_MovablePinAssign(SWM_SCT0_OUT0_O, 24);
-	Chip_Clock_DisablePeriphClock(SYSCTL_CLOCK_SWM);
-
-	Chip_SCTPWM_SetOutPin(SCT_PWM, SCT_PWM_LED, SCT_PWM_PIN_LED);
-	Chip_SCTPWM_SetDutyCycle(SCT_PWM, SCT_PWM_LED, 0);
-	Chip_SCTPWM_Start(SCT_PWM);
-
-	/* Enable SysTick Timer */
-	SysTick_Config(SystemCoreClock / configTICK_RATE_HZ);
-	bool isatlim = false;
+	DigitalIoPin STEP(0, 24, DigitalIoPin::output, false);
+	DigitalIoPin blue(1, 1, DigitalIoPin::output, false);
 	while(1) {
-		if(xSemaphoreTake(lim_sem, 0) == pdTRUE)
-			isatlim = true;
-		else isatlim = false;
-		if((sw1.read() == false) && (sw3.read() != false) && (isatlim == false)) {
-			DIR.write(false);
-			Chip_SCTPWM_SetDutyCycle(SCT_PWM, SCT_PWM_LED, Chip_SCTPWM_PercentageToTicks(SCT_PWM, 50));
-		}
-		else Chip_SCTPWM_SetDutyCycle(SCT_PWM, SCT_PWM_LED, 0);
+		if(xSemaphoreTake(lim_sem, 100) != pdTRUE) {
 
-		if((sw3.read() == false) && (sw1.read() != false) && (isatlim == false)) {
-			DIR.write(true);
-			Chip_SCTPWM_SetDutyCycle(SCT_PWM, SCT_PWM_LED, Chip_SCTPWM_PercentageToTicks(SCT_PWM, 50));
-		}
-		else Chip_SCTPWM_SetDutyCycle(SCT_PWM, SCT_PWM_LED, 0);
+			if((sw1.read() == false) && (sw3.read() != false)) {
+				DIR.write(false);
+				STEP.write(true);
+				vTaskDelay(configTICK_RATE_HZ/2000);
+				STEP.write(false);
+				vTaskDelay(configTICK_RATE_HZ/2000);
+			}
+			else STEP.write(false);
 
+			if((sw3.read() == false) && (sw1.read() != false)) {
+				DIR.write(true);
+				STEP.write(true);
+				vTaskDelay(configTICK_RATE_HZ/2000);
+				STEP.write(false);
+				vTaskDelay(configTICK_RATE_HZ/2000);
+			}
+			else STEP.write(false);
+			blue.write(true);
+		}
+		else blue.write(false);
 	}
 
 }
@@ -150,7 +128,7 @@ int main(void)
 {
 	prvSetupHardware();
 	xTaskCreate(vTask1, "limit sw",
-			configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 2UL),
+			configMINIMAL_STACK_SIZE, NULL, (tskIDLE_PRIORITY + 1UL),
 			(TaskHandle_t *) NULL);
 
 	xTaskCreate(vTask2, "stepper",

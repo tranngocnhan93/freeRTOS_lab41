@@ -39,14 +39,14 @@ C_DEPS += \
 src/%.o: ../src/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU C++ Compiler'
-	arm-none-eabi-c++ -std=c++11 -D__NEWLIB__ -DDEBUG -D__CODE_RED -DCORE_M3 -D__USE_LPCOPEN -DCPP_USE_HEAP -D__LPC15XX__ -I"D:\1. Project\NPCXpresso10.2\lpc_board_nxp_lpcxpresso_1549\inc" -I"D:\1. Project\NPCXpresso10.2\lpc_chip_15xx\inc" -I"D:\1. Project\NPCXpresso10.2\FreeRTOS\inc" -I"D:\1. Project\NPCXpresso10.2\FreeRTOS\src\include" -I"D:\1. Project\NPCXpresso10.2\FreeRTOS\src\portable\GCC\ARM_CM3" -I"D:\1. Project\NPCXpresso10.2\lib_itm\inc" -O0 -fno-common -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -fno-rtti -fno-exceptions -mcpu=cortex-m3 -mthumb -D__NEWLIB__ -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	arm-none-eabi-c++ -std=c++11 -D__NEWLIB__ -DDEBUG -D__CODE_RED -DCORE_M3 -D__USE_LPCOPEN -DCPP_USE_HEAP -D__LPC15XX__ -I"D:\1.Project\NPCXpresso10.2\lpc_board_nxp_lpcxpresso_1549\inc" -I"D:\1.Project\NPCXpresso10.2\lpc_chip_15xx\inc" -I"D:\1.Project\NPCXpresso10.2\FreeRTOS\inc" -I"D:\1.Project\NPCXpresso10.2\FreeRTOS\src\include" -I"D:\1.Project\NPCXpresso10.2\FreeRTOS\src\portable\GCC\ARM_CM3" -I"D:\1.Project\NPCXpresso10.2\lib_itm\inc" -O0 -fno-common -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -fno-rtti -fno-exceptions -mcpu=cortex-m3 -mthumb -D__NEWLIB__ -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU C Compiler'
-	arm-none-eabi-gcc -std=c11 -D__NEWLIB__ -DDEBUG -D__CODE_RED -DCORE_M3 -D__USE_LPCOPEN -DCPP_USE_HEAP -D__LPC15XX__ -I"D:\1. Project\NPCXpresso10.2\lpc_board_nxp_lpcxpresso_1549\inc" -I"D:\1. Project\NPCXpresso10.2\lpc_chip_15xx\inc" -I"D:\1. Project\NPCXpresso10.2\FreeRTOS\inc" -I"D:\1. Project\NPCXpresso10.2\FreeRTOS\src\include" -I"D:\1. Project\NPCXpresso10.2\FreeRTOS\src\portable\GCC\ARM_CM3" -I"D:\1. Project\NPCXpresso10.2\lib_itm\inc" -O0 -fno-common -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	arm-none-eabi-gcc -std=c11 -D__NEWLIB__ -DDEBUG -D__CODE_RED -DCORE_M3 -D__USE_LPCOPEN -DCPP_USE_HEAP -D__LPC15XX__ -I"D:\1.Project\NPCXpresso10.2\lpc_board_nxp_lpcxpresso_1549\inc" -I"D:\1.Project\NPCXpresso10.2\lpc_chip_15xx\inc" -I"D:\1.Project\NPCXpresso10.2\FreeRTOS\inc" -I"D:\1.Project\NPCXpresso10.2\FreeRTOS\src\include" -I"D:\1.Project\NPCXpresso10.2\FreeRTOS\src\portable\GCC\ARM_CM3" -I"D:\1.Project\NPCXpresso10.2\lib_itm\inc" -O0 -fno-common -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -mcpu=cortex-m3 -mthumb -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
